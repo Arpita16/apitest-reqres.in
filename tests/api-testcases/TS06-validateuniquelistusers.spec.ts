@@ -1,9 +1,34 @@
-import { test,expect } from "@playwright/test";
+import { test,expect,request } from "@playwright/test";
+import {APIRequestContext, APIResponse } from "@playwright/test";
 
-const baseURL="https://reqres.in";
+let apiContext: APIRequestContext;
+test.describe('Page User data & unique User ID API- Comprehensive Validations', () => {
 
-async function fetchUsersByPage(request, page: number) {
-    const response = await request.get(`${baseURL}/api/users?page=${page}`)
+  test.beforeAll(async ({ playwright }) => {
+    apiContext = await request.newContext({
+          baseURL: 'https://reqres.in/',
+        })
+    console.log('✅ API context initialized');
+  });
+
+  test.afterAll(async () => {
+    await apiContext.dispose();
+    console.log('🧹 API context disposed');
+  })
+  test.beforeEach(async () => {
+    console.log('Starting a new test...');
+  });
+
+  test.afterEach(async () => {
+    console.log('Test completed.');
+  });
+
+
+
+
+
+async function fetchUsersByPage( page: number) {
+    const response = await apiContext.get(`/api/users?page=${page}`)
     expect(response.status()).toBe(200); 
     return await response.json();
 }
@@ -18,12 +43,13 @@ async function validateUserFields(user: any) {
 
 
 
-test('Validate list user data, data count,no duplicate users', async ({ request }) => {
+test('Validate list user data, data count,no duplicate users', async ({  }) => {
 
    
    //GET request to /api/users?page=1 and validate that the response
-    const page1Data = await fetchUsersByPage(request, 1);
+    const page1Data = await fetchUsersByPage(1);
     const page1Users = page1Data.data;
+    console.log(page1Users)
 
     page1Users.forEach(user => validateUserFields(user));
    
@@ -31,7 +57,7 @@ test('Validate list user data, data count,no duplicate users', async ({ request 
 
     //GET request to /api/users?page=2 and validate that the response
 
-    const page2Data = await fetchUsersByPage(request,2);
+    const page2Data = await fetchUsersByPage(2);
     const page2Users = page2Data.data;
     page2Users.forEach(user => validateUserFields(user));
 
@@ -57,5 +83,6 @@ test('Validate list user data, data count,no duplicate users', async ({ request 
   for (let i = 1; i < page2UserIds.length; i++) {
     expect(page2UserIds[i]).toBeGreaterThan(page2UserIds[i - 1]);
   }
+});
 });
 
