@@ -1,4 +1,6 @@
 import { Page, expect } from "@playwright/test";
+import checkingAccountJson from "..//utils//checkingAccount.json";
+import savingsAccountJson from "../utils/savingsAccount.json";
 
 export class TransferFundsPage {
   
@@ -14,8 +16,8 @@ export class TransferFundsPage {
 
     async transferFunds(amount: string, fromAccount: string, toAccount: string) {
         await this.page.fill("#amount", amount);
-        await this.page.selectOption("#fromAccountId", fromAccount);
-        await this.page.selectOption("#toAccountId", toAccount);
+        await this.page.selectOption("#fromAccountId", savingsAccountJson.accountNumber);
+        await this.page.selectOption("#toAccountId", checkingAccountJson.accountNumber);
         await this.page.getByRole('button',{name:'Transfer'}).click();
     }
 

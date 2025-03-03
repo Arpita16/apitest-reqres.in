@@ -8,7 +8,7 @@ test.describe("Parabank Account Tests", () => {
     let loginPage: LoginPage;
     let openAccountPage: OpenAccountPage;
     let page:any;
-    let accountOverviewPage:AccountsOverviewPage;
+    let accountOverview:AccountsOverviewPage;
 
     test.beforeAll(async ({ browser }) => {
         const context = await browser.newContext();
@@ -17,7 +17,7 @@ test.describe("Parabank Account Tests", () => {
     test.beforeEach(async () => {
         loginPage = new LoginPage(page);
         openAccountPage = new OpenAccountPage(page);
-        accountOverviewPage =new AccountsOverviewPage(page);
+        accountOverview = new AccountsOverviewPage(page);        
     });
 
     test("Login and Open a New Savings Account", async () => {
@@ -27,9 +27,10 @@ test.describe("Parabank Account Tests", () => {
 
         await openAccountPage.navigateToOpenAccount();
         await openAccountPage.openSavingsAccount();
+        
         await openAccountPage.validateAccountOpened();
-        await accountOverviewPage.navigateToAccountsOverview();
-        await openAccountPage.capturedAccount();
+        await openAccountPage.capturedSavingsAccount();
+        
     });
 
       test.afterAll(async () => {

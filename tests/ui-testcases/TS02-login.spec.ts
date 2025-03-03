@@ -4,6 +4,7 @@ import userDataJson from "../../utils/userData.json"
 import { AccountsOverviewPage } from '../../pages/accountsoverview';
 
 
+
 test.describe('User Login', () => {
     let page: any;
     let loginPage: LoginPage;
@@ -22,15 +23,14 @@ test.describe('User Login', () => {
         await loginPage.login(userDataJson);
         await loginPage.validateLoginSuccess();
         await accountOverviewPage.navigateToAccountsOverview();
-        await loginPage.capturedAccount();
-        
-        
+        await loginPage.captureCheckingAccountNumber();
     });
-  
 
-   
+       
+         
 
-    test.afterAll(async () => {
+    
+        test.afterAll(async () => {
         await page.close();
+        });
     });
-});

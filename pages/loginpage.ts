@@ -1,4 +1,5 @@
 import { Page ,expect} from '@playwright/test';
+import { writeFileSync } from 'fs';
 const fs = require('fs');
 
 
@@ -30,10 +31,21 @@ export class LoginPage {
       
 
     }
-    async capturedAccount(){
     
-        const checkingAccountID=await this.page.locator('td#accountId');
-        fs.writeFileSync('checking_accounts.json', JSON.stringify(checkingAccountID));
-        
-    }
+  async captureCheckingAccountNumber() {
+    
+    await this.page.waitForSelector('//table/tbody/tr[1]/td[1]/a');  
+
+  const accountNumber = await this.page.locator('//table/tbody/tr[1]/td[1]/a').textContent();
+   const accountData = {
+    accountNumber: accountNumber
+  };
+
+  writeFileSync('D:\\TecnicalTest-SOP\\utils\\checkingAccount.json', JSON.stringify(accountData));
+
+
+  expect(accountNumber).toBeDefined();
+
+}
+
 }

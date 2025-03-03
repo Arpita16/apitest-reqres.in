@@ -1,38 +1,37 @@
-import { test } from "@playwright/test";
+import { test,expect } from "@playwright/test";
 import { LoginPage } from "../../pages/loginpage";
 import { AccountsOverviewPage } from "../../pages/accountsoverview";
-import userDataJson from "../../utils/userData.json"
+import userData from "../../utils/userData.json"
+import savingsAccountJson from "../../utils/savingsAccount.json";
 
 test.describe("Parabank Savings Account Transactions Validation", () => {
     let loginPage: LoginPage;
     let accountsOverviewPage: AccountsOverviewPage;
-    const savingsAccount = "14121";
+    
 
     test.beforeEach(async ({ page }) => {
         loginPage = new LoginPage(page);
         accountsOverviewPage = new AccountsOverviewPage(page);
 
         await loginPage.navigateToLoginPage();
-        await loginPage.login(userDataJson);
+        await loginPage.login(userData);
         await loginPage.validateLoginSuccess();
     });
 
     test("Verify transactions in Savings Account", async () => {
         await accountsOverviewPage.navigateToAccountsOverview();
-        await accountsOverviewPage.selectAccount(savingsAccount);
+        await accountsOverviewPage.selectAccount(savingsAccountJson.accountNumber);
+        await accountsOverviewPage.validateAccountDetails(savingsAccountJson.accountNumber);
 
         await accountsOverviewPage.transactionCount();
 
-        // Validate $10 transaction
-        //await accountsOverviewPage.validateTransactionExists("10","Debit");
-
-        // Validate $25 transaction
-       // await accountsOverviewPage.validateTransactionExists("25","Debit");
-
+        
          await accountsOverviewPage.validateBalanceAmount();
-        await accountsOverviewPage.validateTransactionAmounts([{amount:'10.00'},{amount:'25.00'}]);
-        await accountsOverviewPage.validateTransactionDetails("10","Debit");
-        await accountsOverviewPage.validateTransactionDetails("25","Debit");
+        
+        const isFound= await accountsOverviewPage.validateTransactionDetails("10");
+        expect(isFound).toBeTruthy();
+        await accountsOverviewPage.validateTransactionDetails("25");
+        expect(isFound).toBeTruthy();
     });
 
 

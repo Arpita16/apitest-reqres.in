@@ -2,13 +2,14 @@ import { test, expect } from "@playwright/test";
 import { LoginPage } from "../../pages/loginpage";
 import { AccountsOverviewPage } from "../../pages/accountsoverview";
 import userDataJson from "../../utils/userData.json"
+//import savingsAccountJson from "../../utils/savingsAccount.json"
 
 
 test.describe("Parabank Account Validation", () => {
     let page: any;
     let loginPage: LoginPage;
     let accountsOverviewPage: AccountsOverviewPage;
-    const accountNumber = "43980"; 
+    //const accountNumber = "43980"; 
 
     test.beforeAll(async ({ browser }) => {
         const context = await browser.newContext();
@@ -25,8 +26,10 @@ test.describe("Parabank Account Validation", () => {
 
     test("Navigate to Accounts Overview and Validate Account", async () => {
         await accountsOverviewPage.navigateToAccountsOverview();
-        await accountsOverviewPage.selectAccount(accountNumber);
-        await accountsOverviewPage.validateAccountDetails(accountNumber);
+        await accountsOverviewPage.capturedSavingsAccount();
+        await accountsOverviewPage.selectAccount(savingsAccountJson.accountNumber);
+        await accountsOverviewPage.validateAccountDetails(savingsAccountJson.accountNumber);
+        
     });
 
     test.afterEach(async () => {
